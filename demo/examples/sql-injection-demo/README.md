@@ -393,7 +393,7 @@ stmt.executeQuery();
 
 1. **Automatic Detection**: No manual test cases needed
 2. **Coverage-Guided**: Explores different code paths
-3. **Reproduci ble**: Saves crash inputs for regression testing
+3. **Reproducible**: Saves crash inputs for regression testing
 4. **Fast**: Finds bugs in seconds to minutes
 
 ---
