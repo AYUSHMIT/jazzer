@@ -1,0 +1,89 @@
+%% Jazzer Architecture Diagram
+%% This Mermaid diagram shows the high-level architecture of Jazzer
+
+graph TB
+    subgraph "Your Application"
+        A[Fuzz Test Method<br/>@FuzzTest]
+        B[Application Code<br/>Under Test]
+    end
+    
+    subgraph "Jazzer Framework"
+        C[Jazzer JUnit Runner]
+        D[Mutation Engine]
+        E[Coverage Instrumentation]
+        F[Corpus Manager]
+    end
+    
+    subgraph "LibFuzzer Core"
+        G[Input Generator]
+        H[Evolutionary Algorithm]
+        I[Coverage Tracking]
+    end
+    
+    subgraph "Security Sanitizers"
+        J[SQL Injection Detector]
+        K[SSRF Detector]
+        L[Path Traversal Detector]
+        M[Command Injection Detector]
+        N[Other Sanitizers...]
+    end
+    
+    subgraph "Feedback Loop"
+        O[New Coverage Found]
+        P[Bug/Crash Detected]
+        Q[Input Corpus]
+        R[Crash Inputs]
+    end
+    
+    A -->|executes with| D
+    D -->|mutated inputs| A
+    A -->|calls| B
+    
+    C -->|manages| D
+    C -->|manages| E
+    C -->|manages| F
+    
+    D -->|coordinates with| G
+    G -->|generates inputs| H
+    H -->|sends inputs| D
+    
+    E -->|instruments| B
+    E -->|reports coverage| I
+    I -->|guides| H
+    
+    B -->|operations monitored by| J
+    B -->|operations monitored by| K
+    B -->|operations monitored by| L
+    B -->|operations monitored by| M
+    
+    J -->|finding detected| P
+    K -->|finding detected| P
+    L -->|finding detected| P
+    M -->|finding detected| P
+    
+    I -->|new coverage| O
+    O -->|saves input| Q
+    P -->|saves input| R
+    
+    F -->|manages| Q
+    F -->|manages| R
+    Q -->|regression tests| A
+    
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style C fill:#ffe1e1
+    style D fill:#ffe1e1
+    style E fill:#ffe1e1
+    style F fill:#ffe1e1
+    style G fill:#fff4e1
+    style H fill:#fff4e1
+    style I fill:#fff4e1
+    style J fill:#e1ffe1
+    style K fill:#e1ffe1
+    style L fill:#e1ffe1
+    style M fill:#e1ffe1
+    style N fill:#e1ffe1
+    style O fill:#f0e1ff
+    style P fill:#ffe1e1
+    style Q fill:#f0e1ff
+    style R fill:#ffe1e1

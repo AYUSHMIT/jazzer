@@ -1,0 +1,76 @@
+%% Sanitizer Detection Flow
+%% Shows how sanitizers detect and report security vulnerabilities
+
+flowchart TB
+    Start[Application Code Execution] --> Monitor[Sanitizer Hooks Active]
+    
+    Monitor --> DB[Database Operation?]
+    Monitor --> File[File System Operation?]
+    Monitor --> Net[Network Operation?]
+    Monitor --> Cmd[Command Execution?]
+    Monitor --> Deser[Deserialization?]
+    
+    DB --> SQLCheck{Contains Untrusted<br/>Input?}
+    SQLCheck -->|Yes| SQLValidate{Valid SQL<br/>Syntax?}
+    SQLValidate -->|No + Exception| SQLReport[🚨 SQL Injection<br/>Detected]
+    SQLValidate -->|Yes| SQLPass[✅ Safe]
+    SQLCheck -->|No| SQLPass
+    
+    File --> PathCheck{Path Contains<br/>Traversal?}
+    PathCheck -->|Yes| PathDanger{Escapes Allowed<br/>Directory?}
+    PathDanger -->|Yes| PathReport[🚨 Path Traversal<br/>Detected]
+    PathDanger -->|No| PathPass[✅ Safe]
+    PathCheck -->|No| PathPass
+    
+    Net --> NetCheck{Connection to<br/>Internal Resource?}
+    NetCheck -->|Yes| NetAllow{Connection<br/>Permitted?}
+    NetAllow -->|No| NetReport[🚨 SSRF<br/>Detected]
+    NetAllow -->|Yes| NetPass[✅ Safe]
+    NetCheck -->|No| NetPass
+    
+    Cmd --> CmdCheck{Contains User<br/>Input?}
+    CmdCheck -->|Yes| CmdDanger{Dangerous<br/>Characters?}
+    CmdDanger -->|Yes| CmdReport[🚨 Command Injection<br/>Detected]
+    CmdDanger -->|No| CmdPass[✅ Safe]
+    CmdCheck -->|No| CmdPass
+    
+    Deser --> DeserCheck{Deserialization of<br/>Untrusted Data?}
+    DeserCheck -->|Yes| DeserDanger{Gadget Chain<br/>Detected?}
+    DeserDanger -->|Yes| DeserReport[🚨 Deserialization<br/>Vulnerability]
+    DeserDanger -->|No| DeserPass[✅ Safe]
+    DeserCheck -->|No| DeserPass
+    
+    SQLReport --> ReportFinding[Generate Finding Report]
+    PathReport --> ReportFinding
+    NetReport --> ReportFinding
+    CmdReport --> ReportFinding
+    DeserReport --> ReportFinding
+    
+    ReportFinding --> SaveInput[Save Crash Input]
+    SaveInput --> StopTest[Stop Test Execution]
+    
+    SQLPass --> Continue[Continue Execution]
+    PathPass --> Continue
+    NetPass --> Continue
+    CmdPass --> Continue
+    DeserPass --> Continue
+    
+    Continue --> Done[Test Completes]
+    StopTest --> Done
+    
+    style Start fill:#e1f5ff
+    style Monitor fill:#fff4e1
+    style SQLReport fill:#ffe1e1
+    style PathReport fill:#ffe1e1
+    style NetReport fill:#ffe1e1
+    style CmdReport fill:#ffe1e1
+    style DeserReport fill:#ffe1e1
+    style ReportFinding fill:#ffe1e1
+    style SaveInput fill:#ffe1e1
+    style SQLPass fill:#e1ffe1
+    style PathPass fill:#e1ffe1
+    style NetPass fill:#e1ffe1
+    style CmdPass fill:#e1ffe1
+    style DeserPass fill:#e1ffe1
+    style Continue fill:#e1ffe1
+    style Done fill:#e1ffe1
