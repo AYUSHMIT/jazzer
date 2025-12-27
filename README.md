@@ -20,6 +20,22 @@
 <a href="https://www.code-intelligence.com/blog" target="_blank">Blog</a>
 |
 <a href="https://twitter.com/CI_Fuzz" target="_blank">Twitter</a>
+
+---
+
+## 🎯 **[View Interactive Demo →](DEMO.md)**
+
+**Try Jazzer in 5 minutes!** Explore [live security examples](demo/examples/), [step-by-step tutorials](demo/tutorials/), and [ready-to-use templates](demo/integrations/).
+
+```bash
+# Quick demo - find SQL injection vulnerabilities automatically
+cd demo/examples/sql-injection-demo && JAZZER_FUZZ=1 mvn test
+```
+
+[📚 Full Demo Hub](demo/README.md) • [⚡ Quick Start](demo/tutorials/quickstart.md) • [💡 Examples](demo/examples/) • [🔧 Templates](demo/integrations/)
+
+---
+
 </div>
 
 Jazzer is a coverage-guided, in-process fuzzer for the JVM platform developed by [Code Intelligence](https://code-intelligence.com).

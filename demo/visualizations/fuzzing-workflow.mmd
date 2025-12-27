@@ -1,0 +1,58 @@
+%% Jazzer Fuzzing Workflow
+%% This diagram shows the step-by-step fuzzing process
+
+flowchart TD
+    Start([Start Fuzzing]) --> Init[Initialize Fuzzer]
+    Init --> LoadCorpus[Load Existing Corpus]
+    LoadCorpus --> CheckMode{Fuzzing Mode?}
+    
+    CheckMode -->|Regression| RegMode[Run with Known Inputs]
+    CheckMode -->|Fuzzing| FuzzMode[Generate New Inputs]
+    
+    RegMode --> RegExecute[Execute Test Cases]
+    RegExecute --> RegCheck{Any Failures?}
+    RegCheck -->|Yes| ReportReg[Report Failures]
+    RegCheck -->|No| PassReg[All Tests Pass]
+    ReportReg --> End
+    PassReg --> End
+    
+    FuzzMode --> GenInput[Generate/Mutate Input]
+    GenInput --> Execute[Execute Fuzz Test]
+    Execute --> Monitor[Monitor Execution]
+    
+    Monitor --> CheckCrash{Crash or<br/>Exception?}
+    CheckCrash -->|Yes| CheckSanitizer{Sanitizer<br/>Triggered?}
+    
+    CheckSanitizer -->|Yes| ClassifyBug[Classify Security Issue]
+    CheckSanitizer -->|No| ClassifyBug2[Classify Bug]
+    
+    ClassifyBug --> SaveCrash[Save to Crash Inputs]
+    ClassifyBug2 --> SaveCrash
+    SaveCrash --> ReportBug[Report Finding with Details]
+    ReportBug --> CheckContinue{Continue<br/>Fuzzing?}
+    
+    CheckCrash -->|No| CheckCoverage{New Coverage<br/>Discovered?}
+    CheckCoverage -->|Yes| AddCorpus[Add Input to Corpus]
+    CheckCoverage -->|No| Discard[Discard Input]
+    
+    AddCorpus --> CheckLimit
+    Discard --> CheckLimit
+    
+    CheckLimit{Reached Time/<br/>Iteration Limit?}
+    CheckLimit -->|No| GenInput
+    CheckLimit -->|Yes| Summary[Generate Summary Report]
+    
+    CheckContinue -->|Yes| GenInput
+    CheckContinue -->|No| Summary
+    
+    Summary --> End([End])
+    
+    style Start fill:#e1ffe1
+    style FuzzMode fill:#e1f5ff
+    style Execute fill:#fff4e1
+    style CheckCrash fill:#ffe1e1
+    style CheckSanitizer fill:#ffe1e1
+    style SaveCrash fill:#ffe1e1
+    style ReportBug fill:#ffe1e1
+    style AddCorpus fill:#e1ffe1
+    style End fill:#e1ffe1
